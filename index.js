@@ -11,12 +11,16 @@ async function essentialData()
 {
     let data = await requestData();
 
-    return data.map(country => ({
+    let extractedData = data.map(country => ({
         name: country.name.common,
         capital: country.capital,
         area: country.area,
-        curreny: country.currencies.code
-    }))
+        currency: country.currencies
+    }));
+
+    return extractedData;
 }
 
-export default essentialData;
+let extractedData = await essentialData();
+
+export default extractedData;
