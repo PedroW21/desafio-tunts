@@ -54,7 +54,7 @@ async function extractCurrency()
 {
     let treatedData = await extractedData;
 
-    let countryCurrency = treatedData.map(countries => countries.currency);
+    let countryCurrency = treatedData.map(countries => Object.keys(countries.currency??{}));
 
     return countryCurrency;
 
@@ -74,26 +74,26 @@ function insertDataInTable(countryNames, countryCapitals, areaCountry, countryCu
     for (let i = 0; i < countryCapitals.length; i++)
     {   
         worksheet.cell(i+3,2)
-        .string(`${countryCapitals[i]}`);
+        .string(`${countryCapitals[i] !== undefined ? countryCapitals[i] : "-"}`);
     }
     
     // Area
     for (let i = 0; i < areaCountry.length; i++)
     {   
         worksheet.cell(i+3,3)
-        .string(`${areaCountry[i]}`);
+        .number(areaCountry[i]);
     }
 
     // Currency
     for (let i = 0; i < countryCurrency.length; i++)
     {   
         worksheet.cell(i+3,4)
-        .string(`${countryCurrency[i]}`);
+        .string(`${countryCurrency[i].length !== 0 ? countryCurrency[i] : "-"}`);
     }
 }
 
-//insertDataInTable(await extractNames(), await extractCapital(), await extractCountry(), await extractCurrency());
+insertDataInTable(await extractNames(), await extractCapital(), await extractCountry(), await extractCurrency());
 
-console.log(await extractCurrency());
+//console.log(await extractCurrency());
 
-//workbook.write("Teste.xlsx");
+workbook.write("Countries.xlsx");
