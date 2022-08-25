@@ -15,15 +15,8 @@ async function essentialData()
         name: country.name.common,
         capital: country.capital,
         area: country.area,
-        curreny: country.currencies
+        curreny: country.currencies.code
     }))
 }
 
-async function showData()
-{
-    let data = await essentialData();
-
-    console.log(data);
-}
-
-showData();
+export default essentialData;
