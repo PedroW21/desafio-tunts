@@ -4,16 +4,14 @@ import {workbook, mainTitle, columnTitles} from "./excelStyles.js";
 
 let worksheet = workbook.addWorksheet("DesafioTunts");
 
-// merge line 1
-//          (cells, column)
+// Basic things: 1 row - merge in the first row with 4 columns and putting the title| 2 row: putting the column's titles; 
+
 worksheet.cell(1, 1, 1, 4, true);
 
-// row 1 title
 worksheet.cell(1, 1)
 .string("Countries List")
 .style(mainTitle);
 
-// Secondary titles
 let secondaryTitles = ["Name", "Capital", "Area", "Currencies"];
 
 for(let i= 1; i <= 4; i++)
@@ -62,6 +60,7 @@ async function generateExcel()
     insertDataInTable(await extractData("capital"), 2);
     insertDataInTable(await extractData("area"), 3);
     insertDataInTable(await extractData("currency"), 4);
+    worksheet.row(2).filter();
 }
 
 workbook.write("Countries.xlsx");

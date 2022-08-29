@@ -36,5 +36,18 @@ async function essentialData()
     }
 }
 
-let treatedData = await essentialData();
+function alphabeticOrder(dataToBeOrdered)
+{
+    return dataToBeOrdered.sort((firstObj,secondObj) => {
+        let name1 = firstObj.name;
+        let name2 = secondObj.name;
+
+        if(name1 > name2) return 1;
+        if(name1 < name2) return -1;
+
+        return 0;
+    });
+}
+
+let treatedData = alphabeticOrder(await essentialData());
 export default treatedData;
