@@ -21,6 +21,6 @@ async function essentialData()
     return extractedData;
 }
 
-let extractedData = await essentialData();
+let treatedData = await essentialData();
 
-export default extractedData;
+export default treatedData;

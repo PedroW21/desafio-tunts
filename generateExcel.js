@@ -1,5 +1,5 @@
 import excelnode from "excel4node";
-import extractedData from "./index.js";
+import treatedData from "./index.js";
 import {workbook, mainTitle, columnTitles} from "./excelStyles.js";
 
 let worksheet = workbook.addWorksheet("DesafioTunts");
@@ -23,77 +23,39 @@ for(let i= 1; i <= 4; i++)
     .style(columnTitles);
 }
 
-async function extractNames()
+async function extractData(wantedData)
 {
-    let treatedData = await extractedData;
-
-    let justNames = treatedData.map( (countries) => countries.name);
-
-    return justNames;
-}
-
-async function extractCapital()
-{
-    let treatedData = await extractedData;
-
-    let nameCapitals = treatedData.map( (countries) => countries.capital);
-
-    return nameCapitals;
-}
-
-async function extractCountry()
-{
-    let treatedData = await extractedData;
-
-    let areaCountry = treatedData.map( (countries) => countries.area);
-
-    return areaCountry;
-}
-
-async function extractCurrency()
-{
-    let treatedData = await extractedData;
-
-    let countryCurrency = treatedData.map(countries => Object.keys(countries.currency??{}));
-
-    return countryCurrency;
-
-    // #TODO IMPROVE THIS - JUST TAKE THE ABBREVIATION
-}
-
-function insertDataInTable(countryNames, countryCapitals, areaCountry, countryCurrency)
-{  
-    // Country Names
-    for (let i = 0; i < countryNames.length; i++)
-    {   
-        worksheet.cell(i+3,1)
-        .string(`${countryNames[i]}`);
-    }
-
-    // Country Capitals
-    for (let i = 0; i < countryCapitals.length; i++)
-    {   
-        worksheet.cell(i+3,2)
-        .string(`${countryCapitals[i] !== undefined ? countryCapitals[i] : "-"}`);
-    }
+    let data = await treatedData;
     
-    // Area
-    for (let i = 0; i < areaCountry.length; i++)
-    {   
-        worksheet.cell(i+3,3)
-        .number(areaCountry[i]);
+    if(wantedData === "currency")
+    {
+        let extractedData = data.map( (countries) => Object.keys(countries.currency??{}));
+        return extractedData;
     }
 
-    // Currency
-    for (let i = 0; i < countryCurrency.length; i++)
-    {   
-        worksheet.cell(i+3,4)
-        .string(`${countryCurrency[i].length !== 0 ? countryCurrency[i] : "-"}`);
+    let extractedData = data.map( (countries) => countries[wantedData]);
+
+    return extractedData;
+}
+
+function insertDataInTable2(data, column)
+{
+    for(let i = 0; i < data.length; i++)
+    {
+        if(typeof(data[i]) === "number")
+        {
+            worksheet.cell(i+3,column)
+            .number(data[i]);
+        }
+
+        worksheet.cell(i+3,column)
+        .string(`${data[i] !== undefined ? (data[i].length !== 0 ? data[i] : "-") : "-"}`);
     }
 }
 
-insertDataInTable(await extractNames(), await extractCapital(), await extractCountry(), await extractCurrency());
+insertDataInTable2(await extractData("name"), 1);
+insertDataInTable2(await extractData("capital"), 2);
+insertDataInTable2(await extractData("area"), 3);
+insertDataInTable2(await extractData("currency"), 4);
 
-//console.log(await extractCurrency());
-
-workbook.write("Countries.xlsx");
+workbook.write("Teste.xlsx");
