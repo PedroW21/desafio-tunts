@@ -1,4 +1,4 @@
-import excelnode from "excel4node";
+import chalk from 'chalk';
 import treatedData from "./index.js";
 import {workbook, mainTitle, columnTitles} from "./excelStyles.js";
 
@@ -38,24 +38,34 @@ async function extractData(wantedData)
     return extractedData;
 }
 
-function insertDataInTable2(data, column)
+function insertDataInTable(data, column)
 {
     for(let i = 0; i < data.length; i++)
     {
-        if(typeof(data[i]) === "number")
+        if(typeof(data[i]) == "number")
         {
             worksheet.cell(i+3,column)
             .number(data[i]);
         }
+        else
+        {
+            worksheet.cell(i+3,column)
+            .string(`${data[i]?.length ? data[i] : '-'}`);
+        }
 
-        worksheet.cell(i+3,column)
-        .string(`${data[i] !== undefined ? (data[i].length !== 0 ? data[i] : "-") : "-"}`);
     }
 }
 
-insertDataInTable2(await extractData("name"), 1);
-insertDataInTable2(await extractData("capital"), 2);
-insertDataInTable2(await extractData("area"), 3);
-insertDataInTable2(await extractData("currency"), 4);
+async function generateExcel()
+{
+    insertDataInTable(await extractData("name"), 1);
+    insertDataInTable(await extractData("capital"), 2);
+    insertDataInTable(await extractData("area"), 3);
+    insertDataInTable(await extractData("currency"), 4);
+}
 
-workbook.write("Teste.xlsx");
+workbook.write("Countries.xlsx");
+
+console.log(chalk.green("Everything went well! Check the result!\n"))
+
+export {generateExcel};
